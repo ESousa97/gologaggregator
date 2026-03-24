@@ -34,7 +34,6 @@
 | Go 1.25+   | Core language and concurrent execution      |
 | Net/HTTP   | Standard library for protocol implementation|
 | Docker     | Containerization and deployment             |
-| Zod/ZAP    | (Planned) Logging and validation            |
 
 ## Architecture
 
@@ -57,43 +56,43 @@ go run ./cmd/aggregator/main.go
 
 ## Roadmap
 
-### Phase 1: Ingestão Multi-Protocolo (Ingress) ✅
-**Objetivo:** Mostrar domínio sobre redes e protocolos variados (TCP e HTTP).
-- [x] Servidor TCP na porta 5000 (raw text).
-- [x] Servidor HTTP na porta 8080 (JSON).
-- [x] Extração de conteúdo e timestamp simultâneos via goroutines.
+### Phase 1: Multi-Protocol Ingestion (Ingress) ✅
+**Goal:** Demonstrate mastery over varied networks and protocols (TCP and HTTP).
+- [x] TCP server on port 5000 (raw text).
+- [x] HTTP server on port 8080 (JSON).
+- [x] Extraction of content and timestamp using concurrent goroutines.
 
-### Phase 2: Buffer e Pipeline de Processamento (The Pipeline) ⏳
-**Objetivo:** Evitar que o sistema trave sob carga pesada (backpressure) usando canais e buffers.
-- [ ] Implementação de canal interno (`chan string`) com buffer.
-- [ ] Worker Pool para consumo de logs.
-- [ ] Agrupamento em lotes (batching) de 100 mensagens ou a cada 5 segundos.
+### Phase 2: Buffer and Processing Pipeline (The Pipeline) ⏳
+**Goal:** Prevent system lockup under heavy load (backpressure) using channels and buffers.
+- [ ] Implementation of an internal buffered `chan string`.
+- [ ] Worker Pool for log consumption.
+- [ ] Batching of 100 messages or every 5 seconds.
 
-### Phase 3: Parsing e Indexação em Memória (Indexing) ⏳
-**Objetivo:** Transformar texto bruto em dados estruturados e pesquisáveis.
-- [ ] Parser para identificação de níveis (`INFO`, `ERROR`, `DEBUG`).
-- [ ] Estrutura de dados em memória protegida por `sync.RWMutex`.
-- [ ] Indexação otimizada para os últimos 10.000 logs.
+### Phase 3: Parsing and In-Memory Indexing (Indexing) ⏳
+**Goal:** Transform raw text into structured and searchable data.
+- [ ] Parser for log level identification (`INFO`, `ERROR`, `DEBUG`).
+- [ ] In-memory data structure protected by `sync.RWMutex`.
+- [ ] Optimized indexing for the last 10,000 logs.
 
-### Phase 4: API de Busca e Filtragem (The Query Engine) ⏳
-**Objetivo:** Permitir que o usuário consulte os logs de forma eficiente.
-- [ ] Endpoint `GET /search` com filtros de nível, tempo e keyword.
-- [ ] Retorno em formato JSON estruturado.
-- [ ] Lógica de busca eficiente sobre o índice em memória.
+### Phase 4: Search and Filtering API (The Query Engine) ⏳
+**Goal:** Allow users to query logs efficiently.
+- [ ] `GET /search` endpoint with level, time range, and keyword filters.
+- [ ] Structured JSON response format.
+- [ ] Efficient search logic over the in-memory index.
 
-### Phase 5: Persistência e Resiliência (The Storage Layer) ⏳
-**Objetivo:** Garantir que os logs não sumam se o serviço reiniciar (WAL).
-- [ ] Persistência em disco com arquivos `.log`.
-- [ ] Lógica de rotação de logs (limite de 10MB).
-- [ ] Dockerização e `docker-compose.yml` para simulação de carga.
+### Phase 5: Persistence and Resilience (The Storage Layer) ⏳
+**Goal:** Ensure logs are not lost if the service restarts (WAL).
+- [ ] Disk persistence using `.log` files.
+- [ ] Simple log rotation logic (10MB limit).
+- [ ] Dockerization and `docker-compose.yml` for load simulation.
 
 ## Contributing
 
-Contribuições são bem-vindas! Siga os padrões de engenharia definidos no projeto.
+Contributions are welcome! Please follow the engineering standards defined in the project.
 
 ## License
 
-Distribuído sob a licença MIT. Veja `LICENSE` para mais detalhes.
+Distributed under the MIT License. See `LICENSE` for more details.
 
 <div align="center">
 
