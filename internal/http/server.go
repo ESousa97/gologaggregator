@@ -1,3 +1,4 @@
+// Package http implements the RESTful API and JSON ingestion layer for the log aggregator.
 package http
 
 import (
@@ -7,14 +8,18 @@ import (
 	"net/http"
 	"time"
 
-	"gologaggregator/internal/store"
+	"github.com/ESousa97/gologaggregator/internal/store"
 )
 
-// Server implements the HTTP listener for log messages
+// Server implements the HTTP listener for log messages and search queries.
+// It integrates with the ingestion channel for asynchronous processing.
 type Server struct {
-	Address       string
+	// Address is the host:port string the server will bind to.
+	Address string
+	// IngestionChan is the write-only channel for sending raw logs to the pipeline.
 	IngestionChan chan<- string
-	Store         *store.MemoryStore
+	// Store is the reference to the in-memory index for log searching.
+	Store *store.MemoryStore
 }
 
 // Start initializes the HTTP server with its routes
@@ -24,7 +29,7 @@ func (s *Server) Start() error {
 	mux.HandleFunc("/search", s.handleSearch)
 
 	log.Printf("[HTTP] Server listening on %s", s.Address)
-	
+
 	server := &http.Server{
 		Addr:    s.Address,
 		Handler: mux,

@@ -1,3 +1,4 @@
+// Package persistence handles long-term storage of log entries to the local filesystem.
 package persistence
 
 import (
@@ -7,12 +8,13 @@ import (
 	"sync"
 	"time"
 
-	"gologaggregator/internal/store"
+	"github.com/ESousa97/gologaggregator/internal/store"
 )
 
-const maxFileSize = 10 * 1024 * 1024 // 10MB
+const maxFileSize = 10 * 1024 * 1024 // 10MB limit before rotation
 
-// FileStore manages disk persistence with rotation
+// FileStore manages disk persistence with automatic log rotation.
+// It ensures that logs are safely written to disk synchronously within batches.
 type FileStore struct {
 	mu       sync.Mutex
 	filePath string
@@ -52,11 +54,11 @@ func (fs *FileStore) WriteBatch(batch []store.LogEntry) error {
 	defer f.Close()
 
 	for _, entry := range batch {
-		line := fmt.Sprintf("[%s] [%s] %s\n", 
-			entry.Timestamp.Format(time.RFC3339), 
-			entry.Level, 
+		line := fmt.Sprintf("[%s] [%s] %s\n",
+			entry.Timestamp.Format(time.RFC3339),
+			entry.Level,
 			entry.Message)
-		
+
 		if _, err := f.WriteString(line); err != nil {
 			return fmt.Errorf("failed to write log: %w", err)
 		}

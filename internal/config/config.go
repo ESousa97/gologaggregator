@@ -1,3 +1,5 @@
+// Package config handles the application's configuration by loading and
+// validating environment variables.
 package config
 
 import (
@@ -5,9 +7,12 @@ import (
 	"os"
 )
 
-// AppConfig defines the configuration structure for the log aggregator
+// AppConfig defines the configuration structure for the log aggregator.
+// It contains the network addresses for both TCP and HTTP ingestion engines.
 type AppConfig struct {
-	TCPAddress  string
+	// TCPAddress is the full host:port string for the TCP server.
+	TCPAddress string
+	// HTTPAddress is the full host:port string for the HTTP API server.
 	HTTPAddress string
 }
 

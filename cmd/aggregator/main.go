@@ -1,3 +1,6 @@
+// Package main is the entry point for the gologaggregator service.
+// It initializes all internal components, including configuration,
+// persistence, ingestion engines, and the processing pipeline.
 package main
 
 import (
@@ -7,12 +10,12 @@ import (
 	"syscall"
 	"time"
 
-	"gologaggregator/internal/config"
-	"gologaggregator/internal/http"
-	"gologaggregator/internal/persistence"
-	"gologaggregator/internal/pipeline"
-	"gologaggregator/internal/store"
-	"gologaggregator/internal/tcp"
+	"github.com/ESousa97/gologaggregator/internal/config"
+	"github.com/ESousa97/gologaggregator/internal/http"
+	"github.com/ESousa97/gologaggregator/internal/persistence"
+	"github.com/ESousa97/gologaggregator/internal/pipeline"
+	"github.com/ESousa97/gologaggregator/internal/store"
+	"github.com/ESousa97/gologaggregator/internal/tcp"
 )
 
 func main() {

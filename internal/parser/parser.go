@@ -1,17 +1,20 @@
+// Package parser provides utilities for transforming raw log strings into
+// structured data entries.
 package parser
 
 import (
 	"strings"
 	"time"
 
-	"gologaggregator/internal/store"
+	"github.com/ESousa97/gologaggregator/internal/store"
 )
 
-// ParseRawMessage extracts log level and message content from a raw string
-// Expected format: "LEVEL: MESSAGE"
+// ParseRawMessage extracts log level and message content from a raw string.
+// It expects the format "LEVEL: MESSAGE". If the format is invalid,
+// it defaults to the "UNKNOWN" level.
 func ParseRawMessage(raw string) store.LogEntry {
 	parts := strings.SplitN(raw, ":", 2)
-	
+
 	entry := store.LogEntry{
 		Timestamp: time.Now(),
 	}

@@ -1,3 +1,5 @@
+// Package store provides thread-safe in-memory storage capabilities
+// for managing log entries with efficient indexing and search.
 package store
 
 import (
@@ -6,20 +8,27 @@ import (
 	"time"
 )
 
-// LogEntry represents a parsed log entry stored in memory
+// LogEntry represents a parsed log entry stored in memory.
+// It includes metadata like level and timestamp for efficient querying.
 type LogEntry struct {
-	Level     string    `json:"level"`
-	Message   string    `json:"message"`
+	// Level indicates the severity of the log (e.g., INFO, ERROR, DEBUG).
+	Level string `json:"level"`
+	// Message contains the descriptive content of the log.
+	Message string `json:"message"`
+	// Timestamp records exactly when the log was parsed or received.
 	Timestamp time.Time `json:"timestamp"`
 }
 
-// PersistenceManager defines the behavior for writing batches to disk
+// PersistenceManager defines the behavior for writing log batches to permanent storage.
+// This interface allows for different persistence backends (e.g., file, database).
 type PersistenceManager interface {
+	// WriteBatch writes a collection of log entries to the storage medium.
 	WriteBatch(batch []LogEntry) error
 }
 
-// MemoryStore implements a thread-safe in-memory storage for logs
-// with a fixed capacity (circular buffer style)
+// MemoryStore implements a thread-safe, in-memory storage for logs.
+// It uses a circular buffer approach to maintain a fixed capacity,
+// overwriting the oldest logs once the limit is reached.
 type MemoryStore struct {
 	mu          sync.RWMutex
 	logs        []LogEntry

@@ -1,3 +1,4 @@
+// Package tcp implements the high-throughput raw TCP ingestion layer.
 package tcp
 
 import (
@@ -7,9 +8,12 @@ import (
 	"net"
 )
 
-// Server implements the TCP listener for log messages
+// Server implements the TCP listener for log messages.
+// It is designed for high-performance, line-delimited text ingestion.
 type Server struct {
-	Address       string
+	// Address is the host:port string the server will bind to.
+	Address string
+	// IngestionChan is the write-only channel for sending raw logs to the pipeline.
 	IngestionChan chan<- string
 }
 
@@ -41,7 +45,7 @@ func (s *Server) handleConnection(conn net.Conn) {
 
 	for scanner.Scan() {
 		rawMessage := scanner.Text()
-		
+
 		// P3: Async - send to buffered channel for later processing
 		s.IngestionChan <- rawMessage
 	}
@@ -50,4 +54,3 @@ func (s *Server) handleConnection(conn net.Conn) {
 		log.Printf("[TCP] Error reading from connection: %v", err)
 	}
 }
-
