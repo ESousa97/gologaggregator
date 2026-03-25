@@ -10,12 +10,17 @@ import (
 	"gologaggregator/internal/config"
 	"gologaggregator/internal/http"
 	"gologaggregator/internal/pipeline"
+	"gologaggregator/internal/store"
 	"gologaggregator/internal/tcp"
 )
 
 func main() {
 	// P3: Config validation on boot
 	cfg := config.Load()
+
+	// Initialize thread-safe in-memory store
+	// Capacity: 10,000 logs
+	logStore := store.NewMemoryStore(10000)
 
 	// Initialize log processing pipeline
 	// Batch size: 100, Timeout: 5s, Workers: 4, Buffer: 1000
@@ -24,7 +29,7 @@ func main() {
 		MaxWaitTime: 5 * time.Second,
 		WorkerCount: 4,
 		BufferSize:  1000,
-	})
+	}, logStore)
 	proc.Start()
 
 	// Initialize servers

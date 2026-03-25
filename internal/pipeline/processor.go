@@ -5,7 +5,15 @@ import (
 	"log"
 	"sync"
 	"time"
+
+	"gologaggregator/internal/parser"
+	"gologaggregator/internal/store"
 )
+
+// LogStore defines the behavior for storing log entries
+type LogStore interface {
+	Append(entry store.LogEntry)
+}
 
 // BatchConfig defines the parameters for log batching
 type BatchConfig struct {
@@ -19,14 +27,16 @@ type BatchConfig struct {
 type Processor struct {
 	IngestionChan chan string
 	config        BatchConfig
+	store         LogStore
 	wg            sync.WaitGroup
 }
 
 // NewProcessor creates a new pipeline processor with defined configuration
-func NewProcessor(cfg BatchConfig) *Processor {
+func NewProcessor(cfg BatchConfig, logStore LogStore) *Processor {
 	return &Processor{
 		IngestionChan: make(chan string, cfg.BufferSize),
 		config:        cfg,
+		store:         logStore,
 	}
 }
 
@@ -45,7 +55,7 @@ func (p *Processor) Start() {
 func (p *Processor) worker(id int) {
 	defer p.wg.Done()
 	
-	batch := make([]string, 0, p.config.MaxSize)
+	batch := make([]store.LogEntry, 0, p.config.MaxSize)
 	ticker := time.NewTicker(p.config.MaxWaitTime)
 	defer ticker.Stop()
 
@@ -60,29 +70,32 @@ func (p *Processor) worker(id int) {
 				return
 			}
 			
-			batch = append(batch, msg)
+			// P5: Parse and validate on the border
+			entry := parser.ParseRawMessage(msg)
+			
+			// Index into memory store immediately for fast retrieval
+			p.store.Append(entry)
+			
+			batch = append(batch, entry)
 			if len(batch) >= p.config.MaxSize {
 				p.processBatch(id, batch)
-				batch = make([]string, 0, p.config.MaxSize)
+				batch = make([]store.LogEntry, 0, p.config.MaxSize)
 				ticker.Reset(p.config.MaxWaitTime)
 			}
 
 		case <-ticker.C:
 			if len(batch) > 0 {
 				p.processBatch(id, batch)
-				batch = make([]string, 0, p.config.MaxSize)
+				batch = make([]store.LogEntry, 0, p.config.MaxSize)
 			}
 		}
 	}
 }
 
 // processBatch simulates sending the batch to the next stage (e.g., storage, API)
-func (p *Processor) processBatch(workerID int, batch []string) {
-	fmt.Printf("[PIPELINE-WORKER-%d] Processing batch of %d messages\n", workerID, len(batch))
-	// In a real scenario, this would send to a database or external service
-	// for _, msg := range batch {
-	//     // ... logic
-	// }
+func (p *Processor) processBatch(workerID int, batch []store.LogEntry) {
+	fmt.Printf("[PIPELINE-WORKER-%d] Processing batch of %d parsed messages\n", workerID, len(batch))
+	// In a real scenario, this would send to an external database or service
 }
 
 // Stop closes the ingestion channel and waits for workers to finish
