@@ -7,7 +7,7 @@
   <br>
 
 [![CI](https://img.shields.io/github/actions/workflow/status/ESousa97/gologaggregator/ci.yml?branch=main&label=CI&logo=github)](https://github.com/ESousa97/gologaggregator/actions/workflows/ci.yml)
-[![Go Report Card](https://goreportcard.com/badge/github.com/ESousa97/gologaggregator)](https://goreportcard.com/report/github.com/ESousa97/gologaggregator)
+[![Go Report Card](https://goreportcard.com/badge/github.com/ESousa97/gologaggregator?=v1)](https://goreportcard.com/report/github.com/ESousa97/gologaggregator?=v1)
 [![Go Reference](https://pkg.go.dev/badge/github.com/ESousa97/gologaggregator.svg)](https://pkg.go.dev/github.com/ESousa97/gologaggregator)
 [![License: MIT](https://img.shields.io/github/license/ESousa97/gologaggregator?color=blue)](https://github.com/ESousa97/gologaggregator/blob/main/LICENSE)
 [![Go Version](https://img.shields.io/github/go-mod/go-version/ESousa97/gologaggregator)](https://github.com/ESousa97/gologaggregator)
