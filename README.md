@@ -1,13 +1,19 @@
-# gologaggregator
+<div align="center">
+  <h1>gologaggregator</h1>
+  <p>High-performance, multi-protocol log aggregator built in Go with concurrent ingestion and processing.</p>
 
-> High-performance, multi-protocol log aggregator built in Go with concurrent ingestion and processing.
+  <img src="assets/github-go.png" alt="gologaggregator Banner" width="600px">
 
-![CI](https://github.com/ESousa97/gologaggregator/actions/workflows/ci.yml/badge.svg)
-![Go Report Card](https://goreportcard.com/badge/github.com/ESousa97/gologaggregator)
-![Go Reference](https://pkg.go.dev/badge/github.com/ESousa97/gologaggregator.svg)
-![License](https://img.shields.io/github/license/ESousa97/gologaggregator)
-![Go Version](https://img.shields.io/github/go-mod/go-version/ESousa97/gologaggregator)
-![Last Commit](https://img.shields.io/github/last-commit/ESousa97/gologaggregator)
+  <br>
+
+[![CI](https://github.com/ESousa97/gologaggregator/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/ESousa97/gologaggregator/actions/workflows/ci.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/ESousa97/gologaggregator)](https://goreportcard.com/report/github.com/ESousa97/gologaggregator)
+[![Go Reference](https://pkg.go.dev/badge/github.com/ESousa97/gologaggregator.svg)](https://pkg.go.dev/github.com/ESousa97/gologaggregator)
+[![License: MIT](https://img.shields.io/github/license/ESousa97/gologaggregator)](https://github.com/ESousa97/gologaggregator/blob/main/LICENSE)
+[![Go Version](https://img.shields.io/github/go-mod/go-version/ESousa97/gologaggregator)](https://github.com/ESousa97/gologaggregator)
+[![Last Commit](https://img.shields.io/github/last-commit/ESousa97/gologaggregator)](https://github.com/ESousa97/gologaggregator/commits/main)
+
+</div>
 
 ---
 
@@ -43,18 +49,20 @@ curl "http://localhost:8080/search?level=ERROR"
 
 ## Prerequisites
 
-- Go >= 1.25
+- Go >= 1.25 (defined in `go.mod`)
 - Docker & Docker Compose (optional)
 - Network tools (curl, nc/telnet)
 
 ## Installation and Usage
 
-### As a binary
+### As a Binary
+
 ```bash
 go install github.com/ESousa97/gologaggregator/cmd/aggregator@latest
 ```
 
-### From source
+### From Source
+
 ```bash
 git clone https://github.com/ESousa97/gologaggregator.git
 cd gologaggregator
@@ -74,6 +82,7 @@ make run
 | `make docker-up` | Starts the full environment via docker-compose |
 | `make docker-down` | Stops the docker-compose services |
 | `make clean` | Removes build artifacts and temporary files |
+| `make spell` | Runs spell checker (requires cspell) |
 
 ## Architecture
 
@@ -87,15 +96,11 @@ The project adopts a modular architecture focused on separation of concerns:
 
 ## API Reference
 
-### `POST /logs`
-Sends a structured log via HTTP.
-- **Payload**: `{"content": "string"}`
-
-### `GET /search`
-Searches indexed logs with filters.
-- **Query Params**: `level` (INFO, ERROR, etc), `query` (search term).
+Detailed documentation of the API and internal packages can be found at [pkg.go.dev](https://pkg.go.dev/github.com/ESousa97/gologaggregator).
 
 ## Configuration
+
+The application uses environment variables or defaults.
 
 | Variable | Description | Type | Default |
 |---|---|---|---|
@@ -115,15 +120,26 @@ Searches indexed logs with filters.
 
 ## Contributing
 
-See how to contribute in [CONTRIBUTING.md](CONTRIBUTING.md).
+Contributions are welcome! See the full guide at [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 
 Distributed under the MIT license. See [LICENSE](LICENSE) for more details.
 
+<div align="center">
+
 ## Author
 
 **Enoque Sousa**
-- [Portfolio](https://enoquesousa.vercel.app)
-- [GitHub](https://github.com/ESousa97)
-- [LinkedIn](https://www.linkedin.com/in/enoque-sousa-bb89aa168/)
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=flat&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/enoque-sousa-bb89aa168/)
+[![GitHub](https://img.shields.io/badge/GitHub-100000?style=flat&logo=github&logoColor=white)](https://github.com/ESousa97)
+[![Portfolio](https://img.shields.io/badge/Portfolio-FF5722?style=flat&logo=target&logoColor=white)](https://enoquesousa.vercel.app)
+
+**[⬆ Back to top](#gologaggregator)**
+
+Made with ❤️ by [Enoque Sousa](https://github.com/ESousa97)
+
+**Project Status:** Active — Study Project
+
+</div>
