@@ -13,6 +13,8 @@ import (
 // LogStore defines the behavior for storing log entries
 type LogStore interface {
 	Append(entry store.LogEntry)
+	// Persist handles disk persistence for batches
+	Persist(batch []store.LogEntry) error
 }
 
 // BatchConfig defines the parameters for log batching
@@ -95,7 +97,11 @@ func (p *Processor) worker(id int) {
 // processBatch simulates sending the batch to the next stage (e.g., storage, API)
 func (p *Processor) processBatch(workerID int, batch []store.LogEntry) {
 	fmt.Printf("[PIPELINE-WORKER-%d] Processing batch of %d parsed messages\n", workerID, len(batch))
-	// In a real scenario, this would send to an external database or service
+	
+	// P3: Async - Persist batch to disk
+	if err := p.store.Persist(batch); err != nil {
+		log.Printf("[PIPELINE-WORKER-%d] Error persisting batch: %v", workerID, err)
+	}
 }
 
 // Stop closes the ingestion channel and waits for workers to finish

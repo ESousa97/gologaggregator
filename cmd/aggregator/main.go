@@ -9,6 +9,7 @@ import (
 
 	"gologaggregator/internal/config"
 	"gologaggregator/internal/http"
+	"gologaggregator/internal/persistence"
 	"gologaggregator/internal/pipeline"
 	"gologaggregator/internal/store"
 	"gologaggregator/internal/tcp"
@@ -18,9 +19,12 @@ func main() {
 	// P3: Config validation on boot
 	cfg := config.Load()
 
+	// Initialize disk persistence with rotation
+	fileStore := persistence.NewFileStore("logs/app.log")
+
 	// Initialize thread-safe in-memory store
 	// Capacity: 10,000 logs
-	logStore := store.NewMemoryStore(10000)
+	logStore := store.NewMemoryStore(10000, fileStore)
 
 	// Initialize log processing pipeline
 	// Batch size: 100, Timeout: 5s, Workers: 4, Buffer: 1000

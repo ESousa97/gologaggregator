@@ -1,0 +1,25 @@
+services:
+  aggregator:
+    build: .
+    ports:
+      - "8080:8080" # TCP
+      - "9090:9090" # HTTP
+    volumes:
+      - ./logs:/app/logs
+    environment:
+      - TCP_ADDRESS=:8080
+      - HTTP_ADDRESS=:9090
+
+  log-generator:
+    image: alpine:latest
+    depends_on:
+      - aggregator
+    command: >
+      sh -c "
+        while true; do
+          echo 'INFO: System healthy' | nc aggregator 8080;
+          sleep 1;
+          echo 'ERROR: Connection failed' | nc aggregator 8080;
+          sleep 2;
+        done
+      "

@@ -13,21 +13,36 @@ type LogEntry struct {
 	Timestamp time.Time `json:"timestamp"`
 }
 
+// PersistenceManager defines the behavior for writing batches to disk
+type PersistenceManager interface {
+	WriteBatch(batch []LogEntry) error
+}
+
 // MemoryStore implements a thread-safe in-memory storage for logs
 // with a fixed capacity (circular buffer style)
 type MemoryStore struct {
-	mu       sync.RWMutex
-	logs     []LogEntry
-	capacity int
-	cursor   int // points to the next available slot
+	mu          sync.RWMutex
+	logs        []LogEntry
+	capacity    int
+	cursor      int // points to the next available slot
+	persistence PersistenceManager
 }
 
-// NewMemoryStore creates a new store with the specified capacity
-func NewMemoryStore(capacity int) *MemoryStore {
+// NewMemoryStore creates a new store with the specified capacity and persistence manager
+func NewMemoryStore(capacity int, pm PersistenceManager) *MemoryStore {
 	return &MemoryStore{
-		logs:     make([]LogEntry, 0, capacity),
-		capacity: capacity,
+		logs:        make([]LogEntry, 0, capacity),
+		capacity:    capacity,
+		persistence: pm,
 	}
+}
+
+// Persist delegates batch writing to the persistence manager
+func (s *MemoryStore) Persist(batch []LogEntry) error {
+	if s.persistence == nil {
+		return nil
+	}
+	return s.persistence.WriteBatch(batch)
 }
 
 // Append adds a new log entry to the store, maintaining the capacity limit
