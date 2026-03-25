@@ -5,15 +5,12 @@ import (
 	"fmt"
 	"log"
 	"net"
-	"strings"
-	"time"
-
-	"gologaggregator/internal/models"
 )
 
 // Server implements the TCP listener for log messages
 type Server struct {
-	Address string
+	Address       string
+	IngestionChan chan<- string
 }
 
 // Start initializes the TCP listener and accepts connections
@@ -44,9 +41,9 @@ func (s *Server) handleConnection(conn net.Conn) {
 
 	for scanner.Scan() {
 		rawMessage := scanner.Text()
-		entry := s.parseMessage(rawMessage)
 		
-		fmt.Printf("[TCP-LOG] [%s] %s\n", entry.Timestamp.Format(time.RFC3339), entry.Content)
+		// P3: Async - send to buffered channel for later processing
+		s.IngestionChan <- rawMessage
 	}
 
 	if err := scanner.Err(); err != nil {
@@ -54,23 +51,3 @@ func (s *Server) handleConnection(conn net.Conn) {
 	}
 }
 
-// parseMessage extracts content and timestamp from the raw TCP payload
-// Expected format: "TIMESTAMP|CONTENT" or just "CONTENT" (defaults to current time)
-func (s *Server) parseMessage(raw string) models.LogEntry {
-	parts := strings.SplitN(raw, "|", 2)
-	
-	if len(parts) == 2 {
-		t, err := time.Parse(time.RFC3339, parts[0])
-		if err == nil {
-			return models.LogEntry{
-				Timestamp: t,
-				Content:   parts[1],
-			}
-		}
-	}
-
-	return models.LogEntry{
-		Timestamp: time.Now(),
-		Content:   raw,
-	}
-}

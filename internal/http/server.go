@@ -1,18 +1,15 @@
 package http
 
 import (
-	"encoding/json"
-	"fmt"
+	"io"
 	"log"
 	"net/http"
-	"time"
-
-	"gologaggregator/internal/models"
 )
 
 // Server implements the HTTP listener for log messages
 type Server struct {
-	Address string
+	Address       string
+	IngestionChan chan<- string
 }
 
 // Start initializes the HTTP server with its routes
@@ -37,17 +34,15 @@ func (s *Server) handleLog(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var entry models.LogEntry
-	if err := json.NewDecoder(r.Body).Decode(&entry); err != nil {
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
 		http.Error(w, "Bad request", http.StatusBadRequest)
 		return
 	}
+	defer r.Body.Close()
 
-	// Validate or set default timestamp if not provided
-	if entry.Timestamp.IsZero() {
-		entry.Timestamp = time.Now()
-	}
+	// P3: Async - send to buffered channel for later processing
+	s.IngestionChan <- string(body)
 
-	fmt.Printf("[HTTP-LOG] [%s] %s\n", entry.Timestamp.Format(time.RFC3339), entry.Content)
 	w.WriteHeader(http.StatusAccepted)
 }
