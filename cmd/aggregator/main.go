@@ -40,6 +40,7 @@ func main() {
 	httpServer := &http.Server{
 		Address:       cfg.HTTPAddress,
 		IngestionChan: proc.IngestionChan,
+		Store:         logStore,
 	}
 
 	errChan := make(chan error, 2)

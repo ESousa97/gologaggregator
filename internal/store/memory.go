@@ -1,6 +1,7 @@
 package store
 
 import (
+	"strings"
 	"sync"
 	"time"
 )
@@ -54,16 +55,52 @@ func (s *MemoryStore) GetAll() []LogEntry {
 	return result
 }
 
-// GetByLevel returns logs filtered by a specific level
-func (s *MemoryStore) GetByLevel(level string) []LogEntry {
+// SearchFilters defines the criteria for searching logs
+type SearchFilters struct {
+	Level   string
+	From    time.Time
+	To      time.Time
+	Keyword string
+}
+
+// Search filters logs based on the provided criteria
+func (s *MemoryStore) Search(filters SearchFilters) []LogEntry {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 
-	var filtered []LogEntry
+	var results []LogEntry
 	for _, entry := range s.logs {
-		if entry.Level == level {
-			filtered = append(filtered, entry)
+		// Filter by Level
+		if filters.Level != "" && entry.Level != filters.Level {
+			continue
 		}
+
+		// Filter by Time Range (From)
+		if !filters.From.IsZero() && entry.Timestamp.Before(filters.From) {
+			continue
+		}
+
+		// Filter by Time Range (To)
+		if !filters.To.IsZero() && entry.Timestamp.After(filters.To) {
+			continue
+		}
+
+		// Filter by Keyword
+		if filters.Keyword != "" {
+			// Case-insensitive search for better UX
+			content := entry.Level + ": " + entry.Message
+			if !containsIgnoreCase(content, filters.Keyword) {
+				continue
+			}
+		}
+
+		results = append(results, entry)
 	}
-	return filtered
+
+	return results
+}
+
+func containsIgnoreCase(s, substr string) bool {
+	s, substr = strings.ToLower(s), strings.ToLower(substr)
+	return strings.Contains(s, substr)
 }
