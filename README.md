@@ -40,8 +40,11 @@
 The project follows strict modularization and clean architecture principles:
 
 - **`internal/tcp`**: Raw TCP server for high-throughput text ingestion.
-- **`internal/http`**: RESTful API for structured JSON log ingestion.
+- **`internal/http`**: RESTful API for structured JSON ingestion and log searching.
 - **`internal/pipeline`**: Concurrent log processing with Worker Pools and batching logic.
+- **`internal/store`**: Thread-safe in-memory circular buffer with search capabilities.
+- **`internal/parser`**: Log parsing logic to extract levels and messages.
+- **`internal/persistence`**: Disk storage manager with automatic log rotation.
 - **`internal/models`**: Domain models and log definitions.
 - **`internal/config`**: Typed configuration and environment management.
 
@@ -69,23 +72,23 @@ go run ./cmd/aggregator/main.go
 - [x] Worker Pool for log consumption.
 - [x] Batching of 100 messages or every 5 seconds.
 
-### Phase 3: Parsing and In-Memory Indexing (Indexing) ⏳
+### Phase 3: Parsing and In-Memory Indexing (Indexing) ✅
 **Goal:** Transform raw text into structured and searchable data.
-- [ ] Parser for log level identification (`INFO`, `ERROR`, `DEBUG`).
-- [ ] In-memory data structure protected by `sync.RWMutex`.
-- [ ] Optimized indexing for the last 10,000 logs.
+- [x] Parser for log level identification (`INFO`, `ERROR`, `DEBUG`).
+- [x] In-memory data structure protected by `sync.RWMutex`.
+- [x] Optimized indexing for the last 10,000 logs.
 
-### Phase 4: Search and Filtering API (The Query Engine) ⏳
+### Phase 4: Search and Filtering API (The Query Engine) ✅
 **Goal:** Allow users to query logs efficiently.
-- [ ] `GET /search` endpoint with level, time range, and keyword filters.
-- [ ] Structured JSON response format.
-- [ ] Efficient search logic over the in-memory index.
+- [x] `GET /search` endpoint with level, time range, and keyword filters.
+- [x] Structured JSON response format.
+- [x] Efficient search logic over the in-memory index.
 
-### Phase 5: Persistence and Resilience (The Storage Layer) ⏳
+### Phase 5: Persistence and Resilience (The Storage Layer) ✅
 **Goal:** Ensure logs are not lost if the service restarts (WAL).
-- [ ] Disk persistence using `.log` files.
-- [ ] Simple log rotation logic (10MB limit).
-- [ ] Dockerization and `docker-compose.yml` for load simulation.
+- [x] Disk persistence using `.log` files.
+- [x] Simple log rotation logic (10MB limit).
+- [x] Dockerization and `docker-compose.yml` for load simulation.
 
 ## Contributing
 
