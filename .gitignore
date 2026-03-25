@@ -17,4 +17,4 @@
 # Project specific
 /aggregator
 /aggregator.exe
-
+/test_phases.go
