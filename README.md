@@ -115,8 +115,6 @@ The application uses environment variables or defaults.
 - [x] In-memory indexing with search and filtering
 - [x] Structured Query API
 - [x] Disk persistence and log rotation
-- [ ] Web Interface for real-time visualization (Dashboard)
-- [ ] Support for exports to S3/ElasticSearch
 
 ## Contributing
 
