@@ -41,6 +41,7 @@ The project follows strict modularization and clean architecture principles:
 
 - **`internal/tcp`**: Raw TCP server for high-throughput text ingestion.
 - **`internal/http`**: RESTful API for structured JSON log ingestion.
+- **`internal/pipeline`**: Concurrent log processing with Worker Pools and batching logic.
 - **`internal/models`**: Domain models and log definitions.
 - **`internal/config`**: Typed configuration and environment management.
 
@@ -62,11 +63,11 @@ go run ./cmd/aggregator/main.go
 - [x] HTTP server on port 8080 (JSON).
 - [x] Extraction of content and timestamp using concurrent goroutines.
 
-### Phase 2: Buffer and Processing Pipeline (The Pipeline) ⏳
+### Phase 2: Buffer and Processing Pipeline (The Pipeline) ✅
 **Goal:** Prevent system lockup under heavy load (backpressure) using channels and buffers.
-- [ ] Implementation of an internal buffered `chan string`.
-- [ ] Worker Pool for log consumption.
-- [ ] Batching of 100 messages or every 5 seconds.
+- [x] Implementation of an internal buffered `chan string`.
+- [x] Worker Pool for log consumption.
+- [x] Batching of 100 messages or every 5 seconds.
 
 ### Phase 3: Parsing and In-Memory Indexing (Indexing) ⏳
 **Goal:** Transform raw text into structured and searchable data.
